@@ -2,249 +2,203 @@
 
 import { useState } from "react";
 
-export default function Dashboard() {
-  const [message, setMessage] = useState("");
+const students = [
+  { name: "Vinitha", registerNo: "23AIML001", attendance: 92 },
+  { name: "Ramya", registerNo: "23AIML002", attendance: 88 },
+  { name: "Jeyashree", registerNo: "23AIML003", attendance: 84 },
+  { name: "Student 4", registerNo: "23AIML004", attendance: 79 },
+  { name: "Student 5", registerNo: "23AIML005", attendance: 91 },
+];
 
-  const openAIPerformance = () => {
-    window.open("http://localhost:5173", "_blank");
-  };
-
-  const handleFeature = (name: string) => {
-    if (name === "AI Performance") {
-      openAIPerformance();
-      return;
-    }
-
-    setMessage(`${name} section is ready for integration.`);
-  };
-
-  const menuItems = [
-    "Dashboard",
-    "Attendance",
-    "Academics",
-    "Assignments",
-    "Timetable",
-    "Calendar",
-    "Coding",
-    "AI Assistant",
-    "AI Performance",
-    "Fees",
-  ];
+export default function AttendancePage() {
+  const [selectedPeriod, setSelectedPeriod] = useState("Overall");
 
   return (
-    <main className="min-h-screen bg-slate-50 flex">
-      {/* Sidebar */}
-      <aside className="w-72 min-h-screen bg-slate-950 text-white p-7">
-        <div className="mb-10">
-          <h1 className="text-2xl font-bold">EduPlus AI</h1>
-          <p className="text-slate-400 mt-2">Smart College Portal</p>
-        </div>
+    <main className="min-h-screen bg-slate-50 p-8 md:p-10">
+      <div className="max-w-6xl mx-auto">
 
-        <nav className="space-y-2">
-          {menuItems.map((item) => (
-            <button
-              key={item}
-              onClick={() => handleFeature(item)}
-              className={`w-full text-left px-5 py-3 rounded-lg transition ${
-                item === "Dashboard"
-                  ? "bg-blue-600 text-white"
-                  : item === "AI Performance"
-                  ? "bg-purple-600/20 text-purple-300 hover:bg-purple-600 hover:text-white"
-                  : "text-slate-200 hover:bg-slate-800"
-              }`}
-            >
-              {item}
-            </button>
-          ))}
-        </nav>
+        <a
+          href="/"
+          className="inline-flex items-center text-blue-600 font-medium hover:underline"
+        >
+          ← Back to Dashboard
+        </a>
 
-        <div className="mt-10 p-4 rounded-xl bg-slate-900 border border-slate-800">
-          <p className="text-sm text-slate-400">AI Powered</p>
-          <p className="text-sm text-white mt-1">
-            Personalized student insights
-          </p>
-        </div>
-      </aside>
-
-      {/* Main Content */}
-      <section className="flex-1 p-10">
         {/* Header */}
-        <div className="flex justify-between items-start mb-10">
+        <div className="mt-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
-            <h2 className="text-4xl font-bold text-slate-900">
-              Good Morning, Alshifha
-            </h2>
-            <p className="text-slate-500 mt-2 text-lg">
-              Here's your academic overview.
+            <h1 className="text-4xl font-bold text-slate-900">
+              Attendance
+            </h1>
+
+            <p className="text-slate-500 mt-2">
+              Monitor student attendance and attendance trends.
             </p>
           </div>
 
-          <div className="flex items-center gap-4">
-            <div className="text-right">
-              <p className="font-semibold text-slate-900">Alshifha</p>
-              <p className="text-slate-500">Student</p>
-            </div>
-
-            <div className="w-14 h-14 rounded-full bg-blue-600 text-white flex items-center justify-center text-xl font-bold">
-              A
-            </div>
-          </div>
+          <select
+            value={selectedPeriod}
+            onChange={(e) => setSelectedPeriod(e.target.value)}
+            className="border border-slate-300 bg-white rounded-lg px-4 py-3"
+          >
+            <option>Overall</option>
+            <option>Current Semester</option>
+            <option>Current Month</option>
+          </select>
         </div>
 
-        {/* Statistics */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-10">
-          <StatCard
-            title="Attendance"
+        {/* Summary */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+
+          <SummaryCard
+            title="Overall Attendance"
             value="87%"
-            subtitle="Good attendance"
-            subtitleColor="text-green-600"
+            description="Good attendance"
+            color="text-green-600"
           />
 
-          <StatCard
-            title="Academic Score"
-            value="82%"
-            subtitle="Above average"
-            subtitleColor="text-blue-600"
+          <SummaryCard
+            title="Present Days"
+            value="104"
+            description="This semester"
+            color="text-blue-600"
           />
 
-          <StatCard
-            title="Coding Problems"
-            value="146"
-            subtitle="This semester"
-            subtitleColor="text-purple-600"
+          <SummaryCard
+            title="Absent Days"
+            value="16"
+            description="This semester"
+            color="text-red-600"
           />
 
-          <StatCard
-            title="AI Risk Score"
-            value="Low"
-            subtitle="Performance is stable"
-            subtitleColor="text-green-600"
-            valueColor="text-green-600"
-          />
         </div>
 
-        {/* Main Grid */}
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-7">
-          {/* Upcoming Activities */}
-          <div className="xl:col-span-2 bg-white border border-slate-300 rounded-2xl p-7">
-            <h3 className="text-2xl font-bold text-slate-900 mb-6">
-              Upcoming Activities
-            </h3>
+        {/* Attendance Table */}
+        <div className="bg-white border border-slate-200 rounded-2xl mt-8 overflow-hidden">
 
-            <div className="space-y-4">
-              <Activity
-                title="AI Assignment"
-                subtitle="Submission deadline: Tomorrow"
-              />
+          <div className="p-6 border-b">
+            <h2 className="text-2xl font-bold text-slate-900">
+              Student Attendance
+            </h2>
 
-              <Activity
-                title="CodeChef Contest"
-                subtitle="Wednesday · 8:00 PM"
-              />
-
-              <Activity
-                title="Internal Assessment"
-                subtitle="Coming next week"
-              />
-            </div>
+            <p className="text-slate-500 mt-1">
+              Attendance records for {selectedPeriod.toLowerCase()}.
+            </p>
           </div>
 
-          {/* AI Insight */}
-          <div className="bg-white border border-slate-300 rounded-2xl p-7">
-            <h3 className="text-2xl font-bold text-slate-900 mb-6">
-              AI Insight
-            </h3>
+          <div className="overflow-x-auto">
+            <table className="w-full">
 
-            <div className="bg-blue-50 rounded-xl p-5">
-              <h4 className="font-bold text-blue-700 text-lg">
-                You're doing well!
-              </h4>
+              <thead className="bg-slate-50">
+                <tr>
+                  <th className="text-left p-5 font-semibold">
+                    Student
+                  </th>
 
-              <p className="text-slate-600 mt-3 leading-relaxed">
-                Your attendance and academic performance are stable. Try
-                solving more coding problems this week to improve your overall
-                skill score.
-              </p>
-            </div>
+                  <th className="text-left p-5 font-semibold">
+                    Register No.
+                  </th>
+
+                  <th className="text-left p-5 font-semibold">
+                    Attendance
+                  </th>
+
+                  <th className="text-left p-5 font-semibold">
+                    Status
+                  </th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {students.map((student) => (
+                  <tr
+                    key={student.registerNo}
+                    className="border-t border-slate-100"
+                  >
+                    <td className="p-5 font-medium text-slate-900">
+                      {student.name}
+                    </td>
+
+                    <td className="p-5 text-slate-500">
+                      {student.registerNo}
+                    </td>
+
+                    <td className="p-5 font-bold">
+                      {student.attendance}%
+                    </td>
+
+                    <td className="p-5">
+                      <span
+                        className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                          student.attendance >= 85
+                            ? "bg-green-100 text-green-700"
+                            : student.attendance >= 75
+                            ? "bg-yellow-100 text-yellow-700"
+                            : "bg-red-100 text-red-700"
+                        }`}
+                      >
+                        {student.attendance >= 85
+                          ? "Good"
+                          : student.attendance >= 75
+                          ? "Warning"
+                          : "Low"}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+
+            </table>
           </div>
         </div>
 
-        {/* AI Performance Highlight */}
-        <div className="mt-7 bg-white border border-purple-200 rounded-2xl p-7">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-5">
-            <div>
-              <p className="text-purple-600 font-semibold">
-                AI-Powered Student Analysis
-              </p>
+        {/* Attendance Insight */}
+        <div className="bg-blue-50 border border-blue-200 rounded-2xl p-6 mt-8">
 
-              <h3 className="text-2xl font-bold text-slate-900 mt-2">
-                View your complete AI Performance Report
-              </h3>
+          <h2 className="text-xl font-bold text-blue-700">
+            Attendance Insight
+          </h2>
 
-              <p className="text-slate-500 mt-2">
-                Check risk score, weak subjects, coding activity,
-                personalized recommendations and AI doubt support.
-              </p>
-            </div>
+          <p className="text-slate-700 mt-2 leading-relaxed">
+            Students maintaining attendance above 85% are in a
+            healthy range. Students between 75% and 85% should
+            monitor their attendance regularly to avoid falling
+            below the required minimum.
+          </p>
 
-            <button
-              onClick={openAIPerformance}
-              className="shrink-0 bg-purple-600 hover:bg-purple-700 text-white font-semibold px-7 py-3 rounded-lg"
-            >
-              Open AI Performance
-            </button>
-          </div>
         </div>
 
-        {message && (
-          <div className="mt-6 bg-blue-50 border border-blue-200 text-blue-700 rounded-lg p-4">
-            {message}
-          </div>
-        )}
-      </section>
+      </div>
     </main>
   );
 }
 
-/* Statistics Card */
-
-function StatCard({
+function SummaryCard({
   title,
   value,
-  subtitle,
-  subtitleColor,
-  valueColor = "text-slate-900",
+  description,
+  color,
 }: {
   title: string;
   value: string;
-  subtitle: string;
-  subtitleColor: string;
-  valueColor?: string;
+  description: string;
+  color: string;
 }) {
   return (
-    <div className="bg-white border border-slate-300 rounded-2xl p-6">
-      <p className="text-slate-500 text-lg">{title}</p>
+    <div className="bg-white border border-slate-200 rounded-2xl p-6">
 
-      <p className={`text-4xl font-bold mt-3 ${valueColor}`}>{value}</p>
+      <p className="text-slate-500">
+        {title}
+      </p>
 
-      <p className={`mt-3 ${subtitleColor}`}>{subtitle}</p>
-    </div>
-  );
-}
+      <p className={`text-4xl font-bold mt-3 ${color}`}>
+        {value}
+      </p>
 
-/* Activity Card */
+      <p className="text-sm text-slate-500 mt-2">
+        {description}
+      </p>
 
-function Activity({
-  title,
-  subtitle,
-}: {
-  title: string;
-  subtitle: string;
-}) {
-  return (
-    <div className="border border-slate-300 rounded-xl p-5">
-      <h4 className="font-bold text-lg text-slate-900">{title}</h4>
-      <p className="text-slate-500 mt-1">{subtitle}</p>
     </div>
   );
 }
