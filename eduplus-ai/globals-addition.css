@@ -1,0 +1,12 @@
+
+/* ===== FORCE LIGHT THEME EVERYWHERE (fixes black bg / invisible text) ===== */
+html {
+  color-scheme: light only;
+}
+body {
+  background-color: #eef0fa !important;
+  color: #1a1a2e !important;
+}
+input, select, textarea, button {
+  color-scheme: light !important;
+}
